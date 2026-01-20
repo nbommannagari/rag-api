@@ -1,7 +1,6 @@
 import os
 from fastapi import FastAPI
 import chromadb
-import ollama
 
 # Mock LLM mode for CI testing
 USE_MOCK_LLM = os.getenv("USE_MOCK_LLM", "0") == "1"
@@ -13,7 +12,7 @@ if not USE_MOCK_LLM:
 app = FastAPI()
 chroma = chromadb.PersistentClient(path="./db")
 collection = chroma.get_or_create_collection("docs")
-ollama_client = ollama.Client(host="http://host.docker.internal:11434")
+# ollama_client = ollama.Client(host="http://host.docker.internal:11434")
 
 
 @app.post("/query")
@@ -31,6 +30,8 @@ def query(q: str): # Question arrives to your API
 
     # In production mode, use Ollama
     # The question and the matching text are sent together to tinyllama, which creates an answer
+    ollama_client = ollama.Client(host="http://host.docker.internal:11434")
+
     answer = ollama.generate(
     # answer = ollama_client.generate(
         model="tinyllama",
