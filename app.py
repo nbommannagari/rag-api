@@ -1,6 +1,14 @@
+import os
 from fastapi import FastAPI
 import chromadb
 import ollama
+
+# Mock LLM mode for CI testing
+USE_MOCK_LLM = os.getenv("USE_MOCK_LLM", "0") == "1"
+
+if not USE_MOCK_LLM:
+    import ollama
+
 
 app = FastAPI()
 chroma = chromadb.PersistentClient(path="./db")
@@ -17,6 +25,11 @@ def query(q: str): # Question arrives to your API
     # If there is a document that matches the question, it will be stored in the context variable. If not, it will be an empty string.
     context = results["documents"][0][0] if results["documents"] else ""
 
+    if USE_MOCK_LLM:
+        # In mock mode, return the retrieved context directly
+        return {"answer": context}
+
+    # In production mode, use Ollama
     # The question and the matching text are sent together to tinyllama, which creates an answer
     answer = ollama.generate(
     # answer = ollama_client.generate(
