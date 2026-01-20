@@ -4,6 +4,7 @@ import chromadb
 
 # Mock LLM mode for CI testing
 USE_MOCK_LLM = os.getenv("USE_MOCK_LLM", "0") == "1"
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
 
 if not USE_MOCK_LLM:
     import ollama
@@ -30,10 +31,11 @@ def query(q: str): # Question arrives to your API
 
     # In production mode, use Ollama
     # The question and the matching text are sent together to tinyllama, which creates an answer
-    ollama_client = ollama.Client(host="http://host.docker.internal:11434")
+    ollama_client = ollama.Client(host=OLLAMA_HOST)
 
-    answer = ollama.generate(
+    # Use the configured client (works in Docker/K8s via OLLAMA_HOST)
     # answer = ollama_client.generate(
+    answer = ollama.generate(
         model="tinyllama",
         prompt=f"Context:\n{context}\n\nQuestion: {q}\n\nAnswer clearly and concisely:"
     )

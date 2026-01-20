@@ -8,9 +8,10 @@ client = chromadb.PersistentClient(path="./db")
 # You can have multiple collections for different types of documents.
 collection = client.get_or_create_collection("docs")
 
-# Opens the k8s.txt file in read mode. The with statement automatically closes the file when done, which is a best practice in Python.
-with open("k8s.txt", "r") as f:
-    text = f.read() # Reads all the content from the file and stores it in the text variable.
+# NOTE: This file is kept for backwards compatibility.
+# Prefer running `python embed_docs.py` to embed *all* docs in `docs/`.
+with open("docs/k8s.txt", "r") as f:
+    text = f.read()
 
 # Adds the text to the collection with the ID "k8s".
 # Chroma automatically converts the text into embeddings (numerical representations) when you add it. 
