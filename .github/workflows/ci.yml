@@ -5,7 +5,7 @@ on:
     paths:
       - 'k8s.txt'
       - 'app.py'
-      - 'embed.py'
+      - 'embeddings.py'
 
 jobs:
   test-and-build:
